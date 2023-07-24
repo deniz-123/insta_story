@@ -31,106 +31,107 @@ class StoryPage extends StatefulWidget {
 }
 
 class _StoryPageState extends State<StoryPage>
-    with
-        SingleTickerProviderStateMixin,
-        AutomaticKeepAliveClientMixin,
-        WidgetsBindingObserver {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     return BaseView(
-        createModel: (context) => StoryPageModel(
-            Provider.of<StoryRepository>(context, listen: false),
-            this,
-            widget.user,
-            widget.onNextTap,
-            widget.onPreviousTap),
-        builder: (context, model, size, padding) {
-          final controller = StoryPageController(model);
-          return VisibilityDetector(
-            key: model.visibilityKey,
-            onVisibilityChanged: controller.onVisibilityChanged,
-            child: DismissiblePage(
-              onDragStart: controller.onDragStart,
-              onDragEnd: controller.onDragEnd,
-              dismissThresholds: const {
-                DismissiblePageDismissDirection.down: .4,
-                DismissiblePageDismissDirection.endToStart: .4,
-                DismissiblePageDismissDirection.horizontal: .4,
-                DismissiblePageDismissDirection.multi: .4,
-                DismissiblePageDismissDirection.none: .4,
-                DismissiblePageDismissDirection.startToEnd: .4,
-                DismissiblePageDismissDirection.up: .4,
-                DismissiblePageDismissDirection.vertical: .4
-              },
-              minRadius: 0,
-              maxRadius: 36,
-              direction: DismissiblePageDismissDirection.vertical,
-              backgroundColor: AppColors.background,
-              onDismissed: Navigator.of(context).pop,
-              startingOpacity: 1,
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: padding.top,
+      createModel: (context) => StoryPageModel(
+        Provider.of<StoryRepository>(context, listen: false),
+        this,
+        widget.user,
+        widget.onNextTap,
+        widget.onPreviousTap,
+      ),
+      builder: (context, model, size, padding) {
+        final controller = StoryPageController(model);
+        return VisibilityDetector(
+          key: model.visibilityKey,
+          onVisibilityChanged: controller.onVisibilityChanged,
+          child: DismissiblePage(
+            onDragStart: controller.onDragStart,
+            onDragEnd: controller.onDragEnd,
+            dismissThresholds: const {
+              DismissiblePageDismissDirection.down: .4,
+              DismissiblePageDismissDirection.endToStart: .4,
+              DismissiblePageDismissDirection.horizontal: .4,
+              DismissiblePageDismissDirection.multi: .4,
+              DismissiblePageDismissDirection.none: .4,
+              DismissiblePageDismissDirection.startToEnd: .4,
+              DismissiblePageDismissDirection.up: .4,
+              DismissiblePageDismissDirection.vertical: .4
+            },
+            minRadius: 0,
+            maxRadius: 36,
+            direction: DismissiblePageDismissDirection.vertical,
+            backgroundColor: AppColors.background,
+            onDismissed: Navigator.of(context).pop,
+            startingOpacity: 1,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Stack(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: padding.top,
+                      ),
+                      GestureDetector(
+                        onTapUp: (details) => controller.onTapUp(
+                          details,
+                          MediaQuery.of(context).size,
                         ),
-                        GestureDetector(
-                          onTapUp: (details) => controller.onTapUp(
-                              details, MediaQuery.of(context).size),
-                          onLongPressStart: controller.onLongPressDown,
-                          onLongPressEnd: controller.onLongPressUp,
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: size.width,
-                                height: size.width * 16 / 9,
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(6),
-                                  image: model.fileIsVideo
-                                      ? null
-                                      : DecorationImage(
-                                          image: NetworkImage(
-                                            model.user.stories[model.index].file
-                                                .url,
-                                          ),
-                                        ),
-                                ),
-                                child: !model.fileIsVideo
+                        onLongPressStart: controller.onLongPressDown,
+                        onLongPressEnd: controller.onLongPressUp,
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: size.width,
+                              height: size.width * 16 / 9,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(6),
+                                image: model.fileIsVideo
                                     ? null
-                                    : model.inittingVideoPlayer ||
-                                            model.videoPlayerController == null
-                                        ? Center(
-                                            child: CupertinoActivityIndicator(
-                                              color: AppColors.primary,
-                                            ),
-                                          )
-                                        : VideoPlayer(
-                                            model.videoPlayerController!),
+                                    : DecorationImage(
+                                        image: NetworkImage(
+                                          model.user.stories[model.index].file
+                                              .url,
+                                        ),
+                                      ),
                               ),
-                              StoryBody(
-                                actionsVisible: model.actionsVisible,
-                                index: model.index,
-                                user: widget.user,
-                                size: size,
-                                animationController: model.animationController,
-                              ),
-                            ],
-                          ),
+                              child: !model.fileIsVideo
+                                  ? null
+                                  : model.inittingVideoPlayer ||
+                                          model.videoPlayerController == null
+                                      ? Center(
+                                          child: CupertinoActivityIndicator(
+                                            color: AppColors.primary,
+                                          ),
+                                        )
+                                      : VideoPlayer(
+                                          model.videoPlayerController!,
+                                        ),
+                            ),
+                            StoryBody(
+                              actionsVisible: model.actionsVisible,
+                              index: model.index,
+                              user: widget.user,
+                              size: size,
+                              animationController: model.animationController,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -219,9 +220,10 @@ class StoryBody extends StatelessWidget {
                                     Text(
                                       user.username,
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
-                                          color: Colors.white),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 10,
@@ -229,9 +231,10 @@ class StoryBody extends StatelessWidget {
                                     Text(
                                       "${date.difference(story.date).inHours}h",
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 13,
-                                          color: Colors.white),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 13,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -265,12 +268,13 @@ class AnimatedBar extends StatelessWidget {
   final int index;
   final User user;
   final AnimationController animationController;
-  const AnimatedBar(
-      {super.key,
-      required this.storyIndex,
-      required this.index,
-      required this.user,
-      required this.animationController});
+  const AnimatedBar({
+    super.key,
+    required this.storyIndex,
+    required this.index,
+    required this.user,
+    required this.animationController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -279,36 +283,39 @@ class AnimatedBar extends StatelessWidget {
         padding: EdgeInsets.only(
             left: storyIndex == 0 ? 0 : 1.5,
             right: storyIndex == user.stories.length - 1 ? 0 : 1.5),
-        child: LayoutBuilder(builder: (context, constraints) {
-          return Stack(
-            children: [
-              Container(
-                height: 2,
-                width: constraints.maxWidth,
-                decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(.3),
-                    borderRadius: BorderRadius.circular(6)),
-              ),
-              AnimatedBuilder(
-                animation: animationController,
-                builder: (context, child) {
-                  return Container(
-                    height: 2,
-                    width: storyIndex < index
-                        ? constraints.maxWidth
-                        : storyIndex > index
-                            ? 0
-                            : constraints.maxWidth * animationController.value,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(1),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  );
-                },
-              )
-            ],
-          );
-        }),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                Container(
+                  height: 2,
+                  width: constraints.maxWidth,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.3),
+                      borderRadius: BorderRadius.circular(6)),
+                ),
+                AnimatedBuilder(
+                  animation: animationController,
+                  builder: (context, child) {
+                    return Container(
+                      height: 2,
+                      width: storyIndex < index
+                          ? constraints.maxWidth
+                          : storyIndex > index
+                              ? 0
+                              : constraints.maxWidth *
+                                  animationController.value,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    );
+                  },
+                )
+              ],
+            );
+          },
+        ),
       ),
     );
   }
