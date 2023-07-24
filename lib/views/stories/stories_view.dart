@@ -4,8 +4,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:insta_story/repositories/story_repository.dart';
 import 'package:insta_story/views/common/base_view.dart';
+import 'package:insta_story/views/stories/stories_controller.dart';
 import 'package:insta_story/views/stories/stories_model.dart';
-import 'package:insta_story/views/stories/widgets/story_page.dart';
+import 'package:insta_story/views/stories/widgets/story_page_view.dart';
 import 'package:provider/provider.dart';
 
 class StoriesView extends StatelessWidget {
@@ -20,6 +21,7 @@ class StoriesView extends StatelessWidget {
     return BaseView(
       createModel: (context) => StoriesModel(index.toDouble()),
       builder: (context, model, size, padding) {
+        final storiesController = StoriesController(model);
         return PageView.builder(
           controller: model.pageController,
           itemCount: storyRepo.feed.length,
@@ -36,23 +38,11 @@ class StoriesView extends StatelessWidget {
               child: StoryPage(
                 user: storyRepo.feed[index],
                 onPreviousTap: (controller) async {
-                  if (index != 0) {
-                    model.pageController.previousPage(
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.linear);
-                    return false;
-                  }
-
-                  return true;
+                  return await storiesController.onPreviousTap(index);
                 },
                 onNextTap: (controller) async {
-                  if (index == storyRepo.feed.length - 1) {
-                    Navigator.of(context).pop();
-                  } else {
-                    model.pageController.nextPage(
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.linear);
-                  }
+                  storiesController.onNextTap(
+                      index, storyRepo.feed.length - 1, context);
                 },
               ),
             );

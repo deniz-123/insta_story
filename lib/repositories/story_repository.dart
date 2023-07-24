@@ -21,7 +21,7 @@ class StoryRepository extends ChangeNotifier {
       return Story.fromJson(decoded);
     });
     for (final story in viewed) {
-      if (story.date.toLocal().difference(DateTime.now()).inHours.abs() < 24) {
+      if (story.date.toLocal().difference(DummyData.date).inHours.abs() < 24) {
         _storiesViewed.add(story);
         notifyListeners();
       }
@@ -42,6 +42,7 @@ class StoryRepository extends ChangeNotifier {
       if (!viewedA && viewedB) {
         return -1;
       }
+
       return -1 * a.stories.last.date.compareTo(b.stories.last.date);
     });
     notifyListeners();
@@ -55,8 +56,7 @@ class StoryRepository extends ChangeNotifier {
     return _storiesViewed.contains(story);
   }
 
-  Future<void> _setDeviceCache() async {
-    await SPUtil.instance.setStoriesViewed([]);
+  Future<void> _setDeviceCache({bool clear = false}) async {
     final cache = _storiesViewed.map((e) {
       final json = e.toJson();
       return jsonEncode(json);

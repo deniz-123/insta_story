@@ -5,7 +5,7 @@ import 'package:insta_story/models/user.dart';
 import 'package:insta_story/res/enums/media_type.dart';
 
 class DummyData {
-  static final _date = DateTime(2023, 7, 18, 24);
+  static final date = DateTime(2023);
   static const _i1 = ImageFile(
     height: 1500,
     width: 1000,
@@ -59,37 +59,37 @@ class DummyData {
   );
 
   static final _s1 = Story(
-    date: _date.subtract(const Duration(hours: 3)),
+    date: date.subtract(const Duration(hours: 23)),
     duration: 5,
     file: _i1,
     id: "s1",
   );
   static final _s2 = Story(
-    date: _date.subtract(const Duration(hours: 7)),
+    date: date.subtract(const Duration(hours: 19)),
     duration: 5,
     file: _i2,
     id: "s2",
   );
   static final _s3 = Story(
-    date: _date.subtract(const Duration(hours: 11)),
+    date: date.subtract(const Duration(hours: 15)),
     duration: 5,
     file: _i3,
     id: "s3",
   );
   static final _s4 = Story(
-    date: _date.subtract(const Duration(hours: 15)),
+    date: date.subtract(const Duration(hours: 11)),
     duration: 5,
     file: _i4,
     id: "s4",
   );
   static final _s5 = Story(
-    date: _date.subtract(const Duration(hours: 19)),
+    date: date.subtract(const Duration(hours: 7)),
     duration: 22,
     file: _v1,
     id: "s5",
   );
   static final _s6 = Story(
-    date: _date.subtract(const Duration(hours: 23)),
+    date: date.subtract(const Duration(hours: 3)),
     duration: 6,
     file: _v2,
     id: "s6",

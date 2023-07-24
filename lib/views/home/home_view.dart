@@ -5,7 +5,6 @@ import 'package:insta_story/views/common/base_view.dart';
 import 'package:insta_story/views/home/home_controller.dart';
 import 'package:insta_story/views/home/home_model.dart';
 import 'package:insta_story/views/home/widgets/stories.dart';
-import 'package:insta_story/views/stories/stories_view.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {
@@ -36,12 +35,7 @@ class HomeView extends StatelessWidget {
                   child: Stories(
                     users: storyRepoListenable.feed,
                     onStoryTap: (index) async {
-                      await Navigator.of(context).push(
-                        CupertinoModalPopupRoute(
-                          builder: (context) => StoriesView(index: index),
-                        ),
-                      );
-                      storyRepo.sortFeed();
+                      controller.onStoryTap(index, context, storyRepo);
                     },
                   ),
                 ),
